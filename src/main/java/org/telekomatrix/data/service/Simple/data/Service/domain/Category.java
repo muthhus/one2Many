@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 
 
@@ -33,6 +34,9 @@ public class Category {
 			inverseJoinColumns = @JoinColumn(name = "domain_id")
 	)
 	private Set<Domain> domains = new HashSet();
+	
+	@Version
+    private Long version;
 
 	public Category() {
 		super();
@@ -68,6 +72,14 @@ public class Category {
 
 	public void setDomains(Set<Domain> domains) {
 		this.domains = domains;
+	}
+
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
 	}
 	
 	
