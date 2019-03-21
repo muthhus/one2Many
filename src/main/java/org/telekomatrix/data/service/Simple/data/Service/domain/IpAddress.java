@@ -1,19 +1,27 @@
 package org.telekomatrix.data.service.Simple.data.Service.domain;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 @Entity
 @Table(name = "ip_address")
+
 public class IpAddress {
 	
 	@GeneratedValue
@@ -23,23 +31,30 @@ public class IpAddress {
 	@Column(name = "ip_address")
 	private String ipAddress;
 	
-	@OneToMany(mappedBy = "ipAddress", cascade=CascadeType.ALL, orphanRemoval=true)
-	private List<DnsEntry> dnsEntries = new ArrayList<DnsEntry>();
+//	@OneToMany(mappedBy = "ipAddress", cascade=CascadeType.ALL, orphanRemoval=true)
+//	private List<DnsEntry> dnsEntries = new ArrayList<DnsEntry>();
 	
 	@Version
     private Long version;
+	
+	@ManyToOne (cascade = CascadeType.ALL)
+	@JoinColumn(name="dns_entry_id")
+	private DnsEntry dnsEntry;
+	
+//	@OneToMany(mappedBy = "ipAddress", cascade=CascadeType.ALL, orphanRemoval=true)
+//	private Set<DomainName> domainNames = new HashSet<>();
 
 	public IpAddress() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public IpAddress(Long id, String ipAddress, List<DnsEntry> dnsEntries) {
+	public IpAddress(Long id, String ipAddress, Long version, DnsEntry dnsEntry) {
 		super();
 		this.id = id;
 		this.ipAddress = ipAddress;
-		this.dnsEntries = dnsEntries;
-		
+		this.version = version;
+		this.dnsEntry = dnsEntry;
 	}
 
 	public Long getId() {
@@ -50,22 +65,12 @@ public class IpAddress {
 		this.id = id;
 	}
 
-	public List<DnsEntry> getDnsEntries() {
-		return dnsEntries;
+	public String getIpAddress() {
+		return ipAddress;
 	}
 
-	public void setDnsEntries(List<DnsEntry> dnsEntries) {
-		this.dnsEntries = dnsEntries;
-	}
-	
-	public void addDnsEntry(DnsEntry dnsEntry) {
-		dnsEntries.add(dnsEntry);
-		dnsEntry.setIpAddress(this);
-	}
-	
-	public void removeDnsEntry(DnsEntry dnsEntry) {
-		dnsEntries.add(dnsEntry);
-		dnsEntry.setIpAddress(null);
+	public void setIpAddress(String ipAddress) {
+		this.ipAddress = ipAddress;
 	}
 
 	public Long getVersion() {
@@ -76,14 +81,16 @@ public class IpAddress {
 		this.version = version;
 	}
 
-	public String getIpAddress() {
-		return ipAddress;
+	public DnsEntry getDnsEntry() {
+		return dnsEntry;
 	}
 
-	public void setIpAddress(String ipAddress) {
-		this.ipAddress = ipAddress;
+	public void setDnsEntry(DnsEntry dnsEntry) {
+		this.dnsEntry = dnsEntry;
 	}
-	
+
+
+
 	
 	
 

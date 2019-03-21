@@ -83,3 +83,16 @@ REsults:
 }
 ],
 }
+
+
+====
+
+{
+  "domainName": {
+    "domainName":"rediff.com"
+  },
+  "ipAddress": {
+   "ipAddress":"125.125.125.125"
+  }
+}
+

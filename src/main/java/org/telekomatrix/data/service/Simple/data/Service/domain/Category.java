@@ -1,14 +1,13 @@
 package org.telekomatrix.data.service.Simple.data.Service.domain;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
@@ -27,14 +26,27 @@ public class Category {
 	@Column(name = "category_name")
 	private String categoryName;
 	
-	@OneToMany
-	@JoinTable(
-			name = "category_domain",
-			joinColumns = @JoinColumn(name="category_id"),
-			inverseJoinColumns = @JoinColumn(name = "domain_id")
-	)
-	private Set<Domain> domains = new HashSet();
+//	@OneToMany
+//	@JoinTable(
+//			name = "category_domain",
+//			joinColumns = @JoinColumn(name="category_id"),
+//			inverseJoinColumns = @JoinColumn(name = "domain_id")
+//	)
+//	private Set<Domain> domains = new HashSet();
 	
+	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Domain_Category> domains = new ArrayList<>();
+	
+	
+	
+	public List<Domain_Category> getDomains() {
+		return domains;
+	}
+
+	public void setDomains(List<Domain_Category> domains) {
+		this.domains = domains;
+	}
+
 	@Version
     private Long version;
 
@@ -66,13 +78,6 @@ public class Category {
 		this.categoryName = categoryName;
 	}
 
-	public Set<Domain> getDomains() {
-		return domains;
-	}
-
-	public void setDomains(Set<Domain> domains) {
-		this.domains = domains;
-	}
 
 	public Long getVersion() {
 		return version;

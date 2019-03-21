@@ -1,11 +1,12 @@
 package org.telekomatrix.data.service.Simple.data.Service.rest;
 
 import java.util.Date;
+import java.util.List;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,8 @@ import org.telekomatrix.data.service.Simple.data.Service.repository.DnsEntryRepo
 import org.telekomatrix.data.service.Simple.data.Service.repository.DomainNameRepository;
 import org.telekomatrix.data.service.Simple.data.Service.repository.IpAddressRepository;
 import org.telekomatrix.data.service.Simple.data.Service.request.DnsEntryVO;
+import org.telekomatrix.data.service.Simple.data.Service.request.DomainNameVO;
+import org.telekomatrix.data.service.Simple.data.Service.request.IpAddressVO;
 
 @RestController
 @RequestMapping("/v1/domainEntries")
@@ -36,26 +39,66 @@ public class DomainEntryRestController {
 	@PostMapping
 	public ResponseEntity<DnsEntry> add(@RequestBody DnsEntryVO dnsEntryVO) {
 		
-		DnsEntry dnsEntry = new DnsEntry(null, null, null, null);
+//		DnsEntry dnsEntry = new DnsEntry(null, null, null, null);
+//		
+//		BeanUtils.copyProperties(dnsEntryVO, dnsEntry);
 		
-		BeanUtils.copyProperties(dnsEntryVO, dnsEntry);
+//		DomainName dname = new DomainName();
+//		dname.setDomainName(dnsEntryVO.getDomainName().getDomainName());
+//		domainNameRepository.save(dname);
+//		
+//		IpAddress ip = new IpAddress();
+//		ip.setIpAddress(dnsEntryVO.getIpAddress().getIpAddress());
+//		ipAddressRepository.save(ip);
+//		
+//		dnsEntry.setTimeStamp(new Date());
+//		dnsEntry.setDomainName(dname);
+//		dnsEntry.setIpAddress(ip);
 		
-		DomainName dname = new DomainName();
-		dname.setDomainName(dnsEntryVO.getDomainName().getDomainName());
-		domainNameRepository.save(dname);
+		DnsEntry dnsEntry = new DnsEntry();
+		dnsEntry.setTimestamp(new Date());
 		
-		IpAddress ip = new IpAddress();
-		ip.setIpAddress(dnsEntryVO.getIpAddress().getIpAddress());
-		ipAddressRepository.save(ip);
+		if(dnsEntryVO.getIpAddress().size() >0) {
+			for(IpAddressVO ipAddressVo : dnsEntryVO.getIpAddress()) {
+				
+				IpAddress ip = ipAddressRepository.findByIpAddress(ipAddressVo.getIpAddress());
+				if(ip == null) {
+					ip = new IpAddress();
+					ip.setIpAddress(ipAddressVo.getIpAddress());
+				
+					dnsEntry.getIpAddresses().add(ip);
+				} else {
+					dnsEntry.getIpAddresses().add(ip);
+				}
+			}
+		}
 		
-		dnsEntry.setTimeStamp(new Date());
-		dnsEntry.setDomainName(dname);
-		dnsEntry.setIpAddress(ip);
+		if(dnsEntryVO.getDomainName().size() >0) {
+			for(DomainNameVO domainNameVO : dnsEntryVO.getDomainName()) {
+				
+				DomainName domainName = domainNameRepository.findByDomainName(domainNameVO.getDomainName());
+				if(domainName == null) {
+					domainName = new DomainName();
+					domainName.setDomainName(domainNameVO.getDomainName());
+				
+					dnsEntry.getDomainNames().add(domainName);
+				} else {
+					dnsEntry.getDomainNames().add(domainName);
+				}
+			}
+		}
+		
+		
 		
 		dnsEntryRepository.save(dnsEntry);
 	
 		
 		return new ResponseEntity<>(dnsEntry, HttpStatus.CREATED);
+	}
+	
+	@GetMapping
+	public ResponseEntity<List<DnsEntry>> getAll() {
+		return new ResponseEntity<>(dnsEntryRepository.findAll(), HttpStatus.OK);
 	}
 
 }
