@@ -2,24 +2,30 @@ package org.telekomatrix.data.service.Simple.data.Service.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.NaturalIdCache;
 
 
 
 @Entity
 @Table(name = "category")
-
+@NaturalIdCache
+@Cache(
+    usage = CacheConcurrencyStrategy.READ_WRITE
+)
 public class Category {
 	
 	@GeneratedValue
@@ -27,20 +33,13 @@ public class Category {
 	private Long categoryId;
 	
 	@Column(name = "category_name")
+	@NaturalId
 	private String categoryName;
 	
-//	@OneToMany
-//	@JoinTable(
-//			name = "category_domain",
-//			joinColumns = @JoinColumn(name="category_id"),
-//			inverseJoinColumns = @JoinColumn(name = "domain_id")
-//	)
-//	private Set<Domain> domains = new HashSet();
 	
-//	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-	@ManyToMany( fetch = FetchType.LAZY, mappedBy = "categories", cascade = CascadeType.ALL  )
-	@JsonManagedReference
-	private List<Domain> domains = new ArrayList<>();
+	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+//	@JsonManagedReference
+	private List<DomainCategory> domains = new ArrayList<>();
 	
 	@Version
     private Long version;
@@ -57,8 +56,6 @@ public class Category {
 		
 	}
 
-	
-	
 
 	public Long getCategoryId() {
 		return categoryId;
@@ -84,17 +81,32 @@ public class Category {
 	public void setVersion(Long version) {
 		this.version = version;
 	}
+	
+	@Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Category category = (Category) o;
+        return Objects.equals(categoryName, category.categoryName);
+    }
+ 
+    @Override
+    public int hashCode() {
+        return Objects.hash(categoryName);
+    }
 
-	public List<Domain> getDomains() {
+	public List<DomainCategory> getDomains() {
 		return domains;
 	}
 
-	public void setDomains(List<Domain> domains) {
+	public void setDomains(List<DomainCategory> domains) {
 		this.domains = domains;
 	}
 
 
-//	http://outbottle.com/java-hibernate-manytomany-tutorial-with-add-and-delete-examples/
+
+
+//	http://webdev.jhuep.com/~jcs/ejava-javaee/coursedocs/content/html/jpa-relationex-one2many-bi.html
 	
 
 }

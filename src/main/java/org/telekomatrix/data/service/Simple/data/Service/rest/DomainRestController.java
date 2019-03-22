@@ -38,7 +38,6 @@ public class DomainRestController {
 			for(CategoryVO categoryVo : domainVO.getCategories()) {
 				Category category = new Category();
 				category.setCategoryName(categoryVo.getCategoryName());
-				
 				domain.addCategory(category);
 				
 			}
