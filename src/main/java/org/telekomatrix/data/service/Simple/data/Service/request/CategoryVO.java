@@ -1,24 +1,24 @@
 package org.telekomatrix.data.service.Simple.data.Service.request;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import java.util.List;
 
 public class CategoryVO {
 	
 	private String categoryName;
 	
-	private Set<DomainVO> domains = new HashSet<>();
+	private List<DomainVO> domains;
+	
 
 	public CategoryVO() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public CategoryVO(String categoryName, Set<DomainVO> domains) {
+	public CategoryVO(String categoryName, List<DomainVO> domains) {
 		super();
 		this.categoryName = categoryName;
 		this.domains = domains;
+		
 	}
 
 	public String getCategoryName() {
@@ -29,13 +29,14 @@ public class CategoryVO {
 		this.categoryName = categoryName;
 	}
 
-	public Set<DomainVO> getDomains() {
+	public List<DomainVO> getDomains() {
 		return domains;
 	}
 
-	public void setDomains(Set<DomainVO> domains) {
+	public void setDomains(List<DomainVO> domains) {
 		this.domains = domains;
 	}
+
 	
 	
 

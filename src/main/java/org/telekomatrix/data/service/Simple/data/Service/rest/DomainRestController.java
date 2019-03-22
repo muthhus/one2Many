@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.telekomatrix.data.service.Simple.data.Service.domain.Category;
 import org.telekomatrix.data.service.Simple.data.Service.domain.Domain;
 import org.telekomatrix.data.service.Simple.data.Service.repository.DomainRepository;
+import org.telekomatrix.data.service.Simple.data.Service.request.CategoryVO;
 import org.telekomatrix.data.service.Simple.data.Service.request.DomainVO;
 
 
@@ -28,7 +30,19 @@ public class DomainRestController {
 		Domain domain = new Domain();
 		domain.setDomainName(domainVO.getDomainName());
 
-		BeanUtils.copyProperties(domainVO, domain);
+//		BeanUtils.copyProperties(domainVO, domain);
+		if(domainVO.getCategories().size() >0) {
+			System.out.println("-----------------------------");
+			System.out.println(domainVO.getCategories());
+			System.out.println("-----------------------------");
+			for(CategoryVO categoryVo : domainVO.getCategories()) {
+				Category category = new Category();
+				category.setCategoryName(categoryVo.getCategoryName());
+				
+				domain.addCategory(category);
+				
+			}
+		}
 		
 		domainRepository.saveAndFlush(domain);
 		return new ResponseEntity<>(domain, HttpStatus.CREATED);

@@ -3,6 +3,9 @@ package org.telekomatrix.data.service.Simple.data.Service.domain;
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.persistence.Embeddable;
+
+@Embeddable
 public class DomainCategoryId implements Serializable{
 	
 	private Long domainId;

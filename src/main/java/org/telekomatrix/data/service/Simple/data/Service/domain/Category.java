@@ -6,11 +6,14 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 
 
@@ -21,7 +24,7 @@ public class Category {
 	
 	@GeneratedValue
 	@Id
-	private Long id;
+	private Long categoryId;
 	
 	@Column(name = "category_name")
 	private String categoryName;
@@ -34,19 +37,11 @@ public class Category {
 //	)
 //	private Set<Domain> domains = new HashSet();
 	
-	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Domain_Category> domains = new ArrayList<>();
+//	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+	@ManyToMany( fetch = FetchType.LAZY, mappedBy = "categories", cascade = CascadeType.ALL  )
+	@JsonManagedReference
+	private List<Domain> domains = new ArrayList<>();
 	
-	
-	
-	public List<Domain_Category> getDomains() {
-		return domains;
-	}
-
-	public void setDomains(List<Domain_Category> domains) {
-		this.domains = domains;
-	}
-
 	@Version
     private Long version;
 
@@ -55,19 +50,22 @@ public class Category {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Category(Long id, String categoryName) {
+	public Category(Long categoryId, String categoryName) {
 		super();
-		this.id = id;
+		this.categoryId = categoryId;
 		this.categoryName = categoryName;
 		
 	}
 
-	public Long getId() {
-		return id;
+	
+	
+
+	public Long getCategoryId() {
+		return categoryId;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setCategoryId(Long categoryId) {
+		this.categoryId = categoryId;
 	}
 
 	public String getCategoryName() {
@@ -86,7 +84,17 @@ public class Category {
 	public void setVersion(Long version) {
 		this.version = version;
 	}
-	
+
+	public List<Domain> getDomains() {
+		return domains;
+	}
+
+	public void setDomains(List<Domain> domains) {
+		this.domains = domains;
+	}
+
+
+//	http://outbottle.com/java-hibernate-manytomany-tutorial-with-add-and-delete-examples/
 	
 
 }

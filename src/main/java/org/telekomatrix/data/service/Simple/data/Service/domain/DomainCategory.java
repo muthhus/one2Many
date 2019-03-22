@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name ="domain_category")
-public class Domain_Category {
+public class DomainCategory {
 
 	@EmbeddedId
 	private DomainCategoryId id;
@@ -23,7 +23,7 @@ public class Domain_Category {
 	@MapsId("categoryId")
 	private Category category;
 
-	public Domain_Category() {
+	public DomainCategory() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -49,7 +49,7 @@ public class Domain_Category {
 	}
 
 
-	public Domain_Category(Domain domain, Category category) {
+	public DomainCategory(Domain domain, Category category) {
 		super();
 		this.domain = domain;
 		this.category = category;
@@ -59,7 +59,7 @@ public class Domain_Category {
 	public boolean equals(Object o) {
 	if (this == o) return true;
 	if (o == null || getClass() != o.getClass()) return false;
-	Domain_Category that = (Domain_Category) o;
+	DomainCategory that = (DomainCategory) o;
 	return Objects.equals(domain, that.domain) &&
 	Objects.equals(category, that.category);
 	}
