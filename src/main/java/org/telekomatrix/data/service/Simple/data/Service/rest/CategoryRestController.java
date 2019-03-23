@@ -29,14 +29,13 @@ public class CategoryRestController {
 	
 	@PostMapping
 	public ResponseEntity<Category> createCategory(@RequestBody CategoryVO categoryVO){
-		Category category = new Category(null);
+		Category category = new Category(null, null);
 		category.setCategoryName(categoryVO.getCategoryName());
 
 		for(DomainVO domainVO : categoryVO.getDomains()) {
 			Domain domain = new Domain();
 			domain.setDomainName(domainVO.getDomainName());
 			domainRepository.save(domain);
-//			category.getDomains().add(domain);
 			
 		}
 		

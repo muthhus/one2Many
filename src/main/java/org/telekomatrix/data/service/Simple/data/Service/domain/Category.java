@@ -1,34 +1,31 @@
 package org.telekomatrix.data.service.Simple.data.Service.domain;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.NaturalIdCache;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 
 
 @Entity
 @Table(name = "category")
-@NaturalIdCache
-@Cache(
-    usage = CacheConcurrencyStrategy.READ_WRITE
-)
 public class Category implements Serializable {
 	
 	@GeneratedValue
@@ -36,13 +33,14 @@ public class Category implements Serializable {
 	@Column(name = "category_id")
 	private Long categoryId;
 	
-	@Column(name = "category_name")
+	@Column(name = "category_name", nullable = false)
 	@NaturalId
 	private String categoryName;
 	
 	
-	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<DomainCategory> domains = new ArrayList<>();
+	@OneToMany(mappedBy = "pk.category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JsonManagedReference
+	private Set<DomainCategory> domains = new HashSet<>();
 	
 	@Version
     private Long version;
@@ -54,8 +52,9 @@ public class Category implements Serializable {
 		
 	}
 
-	public Category(String categoryName) {
+	public Category(String categoryName, Set<DomainCategory> domains) {
 		this.categoryName = categoryName;
+		this.domains = domains;
 		
 	}
 
@@ -98,11 +97,11 @@ public class Category implements Serializable {
         return Objects.hash(categoryName);
     }
 
-	public List<DomainCategory> getDomains() {
+	public Set<DomainCategory> getDomains() {
 		return domains;
 	}
 
-	public void setDomains(List<DomainCategory> domains) {
+	public void setDomains(Set<DomainCategory> domains) {
 		this.domains = domains;
 	}
 
@@ -113,13 +112,6 @@ public class Category implements Serializable {
 	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
 	}
-	
-	
-
-
-
-
-//	http://webdev.jhuep.com/~jcs/ejava-javaee/coursedocs/content/html/jpa-relationex-one2many-bi.html
-	
+		
 
 }

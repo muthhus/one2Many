@@ -2,15 +2,16 @@ package org.telekomatrix.data.service.Simple.data.Service.domain;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -18,7 +19,11 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name="domain")
@@ -29,7 +34,7 @@ public class Domain implements Serializable {
 	@Column(name = "domain_id")
 	private Long domainId;
 	
-	@Column(name="domain_name")
+	@Column(name="domain_name", nullable = false)
 	private String domainName;
 	
 	@Version
@@ -41,8 +46,10 @@ public class Domain implements Serializable {
 	@UpdateTimestamp
 	private Date updatedTimestamp;
 	
-	@OneToMany(mappedBy = "domain", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<DomainCategory> categories = new ArrayList<>();
+	@OneToMany(mappedBy = "pk.domain", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@Fetch(FetchMode.SELECT)
+	@JsonManagedReference
+	private Set<DomainCategory> domainCategories = new HashSet<>();
 
 	public Domain() {
 		super();
@@ -50,11 +57,10 @@ public class Domain implements Serializable {
 	}
 
 
-	public Domain(String domainName, Long version, List<DomainCategory> categories) {
+	public Domain(String domainName, Set<DomainCategory> domainCategories) {
 		super();
 		this.domainName = domainName;
-		this.version = version;
-		this.categories = categories;
+		this.domainCategories = domainCategories;
 	}
 
 
@@ -67,12 +73,12 @@ public class Domain implements Serializable {
 	}
 
 
-	public List<DomainCategory> getCategories() {
-		return categories;
+	public Set<DomainCategory> getDomainCategories() {
+		return domainCategories;
 	}
 
-	public void setCategories(List<DomainCategory> categories) {
-		this.categories = categories;
+	public void setDomainCategories(Set<DomainCategory> domainCategories) {
+		this.domainCategories = domainCategories;
 	}
 
 	public String getDomainName() {
@@ -87,60 +93,14 @@ public class Domain implements Serializable {
 		return version;
 	}
 
-	public void setVersion(Long version) {
-		this.version = version;
-	}
 	
 	public void addCategory(Category category) {
-        DomainCategory domainCategory = new DomainCategory(this, category);
-        categories.add(domainCategory);
-//        category.getDomains().add(domainCategory);
+        DomainCategory domainCategory = new DomainCategory();
+        domainCategories.add(domainCategory);
+    	domainCategory.setCreatedDate(new Date());
+		domainCategory.setCreatedBy("System");
+        category.getDomains().add(domainCategory);
     }
- 
-    public void removeCategory(Category category) {
-        for (Iterator<DomainCategory> iterator = categories.iterator();
-             iterator.hasNext(); ) {
-        	DomainCategory domainCategory = iterator.next();
- 
-            if (domainCategory.getDomain().equals(this) &&
-            		domainCategory.getCategory().equals(category)) {
-                iterator.remove();
-                domainCategory.getCategory().getDomains().remove(domainCategory);
-                domainCategory.setDomain(null);
-                domainCategory.setCategory(null);
-            }
-        }
-    }
- 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
- 
-        if (o == null || getClass() != o.getClass())
-            return false;
- 
-        Domain domain = (Domain) o;
-        return Objects.equals(domainName, domain.domainName);
-    }
- 
-    @Override
-    public int hashCode() {
-        return Objects.hash(domainName);
-    }
-		
-	
-//	public void removeCategory(Category category) {
-//		for (Iterator<DomainCategory> iterator = categories.iterator(); iterator.hasNext(); ) {
-//		DomainCategory domainCategory = iterator.next();
-//		if (domainCategory.getDomain().equals(this) && domainCategory.getCategory().equals(category)) {
-//		iterator.remove();
-//		domainCategory.getCategory().getDomains().remove(domainCategory);
-//		domainCategory.setDomain(null);
-//		domainCategory.setCategory(null);
-//		break;
-//		}
-//		}
-//		}
-//	
+
 
 }

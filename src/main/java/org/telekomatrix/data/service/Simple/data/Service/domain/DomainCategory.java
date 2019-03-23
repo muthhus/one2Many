@@ -2,80 +2,99 @@ package org.telekomatrix.data.service.Simple.data.Service.domain;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Objects;
 
+import javax.persistence.AssociationOverride;
+import javax.persistence.AssociationOverrides;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name ="domain_category")
-public class DomainCategory implements Serializable {
-
-	@EmbeddedId
-	private DomainCategoryId id;
+@AssociationOverrides({
+	@AssociationOverride(name = "pk.domain", 
+		joinColumns = @JoinColumn(name = "DOMAIN_ID")),
+	@AssociationOverride(name = "pk.category", 
+		joinColumns = @JoinColumn(name = "CATEGORY_ID")) })
+public class DomainCategory implements Serializable{
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@MapsId("domainId")
-//	@JoinColumn(name = "domain", referencedColumnName = "domain_id", insertable = false, updatable = false)
-//	@NotFound(action=NotFoundAction.IGNORE)
-	private Domain domain;
+	private DomainCategoryId pk = new DomainCategoryId();
+	private Date createdDate;
+	private String createdBy;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@MapsId("categoryId")
-//	@JoinColumn(name = "category", referencedColumnName = "category_id", insertable = false, updatable = false)
-//	@NotFound(action=NotFoundAction.IGNORE)
-	private Category category;
-	
-	@Column(name = "created_on")
-	private Date createdOn = new Date();
-	
-	
-
 	public DomainCategory() {
 		
 	}
-
-	public DomainCategory(Domain domain, Category category) {
-		this.domain = domain;
-		this.category = category;
-		this.id = new DomainCategoryId(domain.getDomainId(), category.getCategoryId());
+	
+	@EmbeddedId
+	public DomainCategoryId getPk() {
+		return pk;
 	}
 	
-	public Domain getDomain() {
-		return domain;
+	public void setPk(DomainCategoryId pk) {
+		this.pk = pk;
 	}
-
+	
+	@Transient
+	public Domain getDoamin() {
+		return getPk().getDomain();
+	}
 
 	public void setDomain(Domain domain) {
-		this.domain = domain;
+		getPk().setDomain(domain);
 	}
-
-
+	
+	@Transient
 	public Category getCategory() {
-		return category;
+		return getPk().getCategory();
 	}
-
 
 	public void setCategory(Category category) {
-		this.category = category;
+		getPk().setCategory(category);
+	}
+	
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "CREATED_DATE", nullable = false, length = 10)
+	public Date getCreatedDate() {
+		return this.createdDate;
 	}
 
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	@Column(name = "CREATED_BY", nullable = false, length = 10)
+	public String getCreatedBy() {
+		return this.createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
 	
-	@Override
 	public boolean equals(Object o) {
-	if (this == o) return true;
-	if (o == null || getClass() != o.getClass()) return false;
-	DomainCategory that = (DomainCategory) o;
-	return Objects.equals(domain, that.domain) &&
-	Objects.equals(category, that.category);
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+
+		DomainCategory that = (DomainCategory) o;
+
+		if (getPk() != null ? !getPk().equals(that.getPk())
+				: that.getPk() != null)
+			return false;
+
+		return true;
 	}
-	@Override
+
 	public int hashCode() {
-	return Objects.hash(domain, category);
-	}
+		return (getPk() != null ? getPk().hashCode() : 0);
+	}	
+	
 }
