@@ -23,7 +23,9 @@ import javax.persistence.Transient;
 		joinColumns = @JoinColumn(name = "CATEGORY_ID")) })
 public class DomainCategory implements Serializable{
 	
+
 	private DomainCategoryId pk = new DomainCategoryId();
+	
 	private Date createdDate;
 	private String createdBy;
 	

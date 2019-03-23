@@ -1,12 +1,15 @@
 package org.telekomatrix.data.service.Simple.data.Service.domain;
 
 import java.io.Serializable;
-import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Embeddable
 public class DomainCategoryId implements Serializable {
@@ -14,9 +17,13 @@ public class DomainCategoryId implements Serializable {
 	private Domain domain;
 	private Category category;
 	
+	 @Id
+	    @GeneratedValue(strategy = GenerationType.TABLE)
+	    @Column(name = "id", nullable = false)
+	    private Integer id;
 	
 	@ManyToOne
-	@JsonManagedReference
+	@JsonBackReference
 	public Domain getDomain() {
 		return domain;
 	}
@@ -26,7 +33,7 @@ public class DomainCategoryId implements Serializable {
 	}
 
 	@ManyToOne
-	@JsonManagedReference
+	@JsonBackReference
 	public Category getCategory() {
 		return category;
 	}
@@ -34,6 +41,8 @@ public class DomainCategoryId implements Serializable {
 	public void setCategory(Category category) {
 		this.category = category;
 	}
+	
+	
 	
 	public boolean equals(Object o) {
         if (this == o) return true;

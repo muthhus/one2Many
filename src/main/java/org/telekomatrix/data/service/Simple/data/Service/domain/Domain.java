@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -16,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import org.hibernate.annotations.CreationTimestamp;
