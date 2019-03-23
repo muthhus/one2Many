@@ -29,7 +29,7 @@ public class CategoryRestController {
 	
 	@PostMapping
 	public ResponseEntity<Category> createCategory(@RequestBody CategoryVO categoryVO){
-		Category category = new Category(null,null);
+		Category category = new Category(null);
 		category.setCategoryName(categoryVO.getCategoryName());
 
 		for(DomainVO domainVO : categoryVO.getDomains()) {

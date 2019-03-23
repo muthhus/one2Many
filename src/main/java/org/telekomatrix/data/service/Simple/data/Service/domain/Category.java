@@ -1,6 +1,8 @@
 package org.telekomatrix.data.service.Simple.data.Service.domain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -15,6 +17,7 @@ import javax.persistence.Version;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.NaturalIdCache;
 
@@ -26,10 +29,11 @@ import org.hibernate.annotations.NaturalIdCache;
 @Cache(
     usage = CacheConcurrencyStrategy.READ_WRITE
 )
-public class Category {
+public class Category implements Serializable {
 	
 	@GeneratedValue
 	@Id
+	@Column(name = "category_id")
 	private Long categoryId;
 	
 	@Column(name = "category_name")
@@ -38,20 +42,19 @@ public class Category {
 	
 	
 	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-//	@JsonManagedReference
 	private List<DomainCategory> domains = new ArrayList<>();
 	
 	@Version
     private Long version;
+	
+	@CreationTimestamp
+	private Date createdAt;
 
 	public Category() {
-		super();
-		// TODO Auto-generated constructor stub
+		
 	}
 
-	public Category(Long categoryId, String categoryName) {
-		super();
-		this.categoryId = categoryId;
+	public Category(String categoryName) {
 		this.categoryName = categoryName;
 		
 	}
@@ -102,6 +105,16 @@ public class Category {
 	public void setDomains(List<DomainCategory> domains) {
 		this.domains = domains;
 	}
+
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
+	
+	
 
 
 

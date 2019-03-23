@@ -1,33 +1,50 @@
 package org.telekomatrix.data.service.Simple.data.Service.domain;
 
+import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
 
 @Entity
 @Table(name ="domain_category")
-public class DomainCategory {
+public class DomainCategory implements Serializable {
 
 	@EmbeddedId
 	private DomainCategoryId id;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@MapsId("domainId")
+//	@JoinColumn(name = "domain", referencedColumnName = "domain_id", insertable = false, updatable = false)
+//	@NotFound(action=NotFoundAction.IGNORE)
 	private Domain domain;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@MapsId("categoryId")
+//	@JoinColumn(name = "category", referencedColumnName = "category_id", insertable = false, updatable = false)
+//	@NotFound(action=NotFoundAction.IGNORE)
 	private Category category;
+	
+	@Column(name = "created_on")
+	private Date createdOn = new Date();
+	
+	
 
 	public DomainCategory() {
-		super();
-		// TODO Auto-generated constructor stub
+		
 	}
 
+	public DomainCategory(Domain domain, Category category) {
+		this.domain = domain;
+		this.category = category;
+		this.id = new DomainCategoryId(domain.getDomainId(), category.getCategoryId());
+	}
 	
 	public Domain getDomain() {
 		return domain;
@@ -48,12 +65,6 @@ public class DomainCategory {
 		this.category = category;
 	}
 
-
-	public DomainCategory(Domain domain, Category category) {
-		super();
-		this.domain = domain;
-		this.category = category;
-	}
 	
 	@Override
 	public boolean equals(Object o) {

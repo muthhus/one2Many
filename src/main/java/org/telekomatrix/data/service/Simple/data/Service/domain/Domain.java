@@ -1,6 +1,9 @@
 package org.telekomatrix.data.service.Simple.data.Service.domain;
 
+import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -14,13 +17,16 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 @Entity
 @Table(name="domain")
-
-public class Domain {
+public class Domain implements Serializable {
 	
 	@GeneratedValue
 	@Id
+	@Column(name = "domain_id")
 	private Long domainId;
 	
 	@Column(name="domain_name")
@@ -28,6 +34,12 @@ public class Domain {
 	
 	@Version
     private Long version;
+	
+	@CreationTimestamp
+	private Timestamp timpstamp;
+	
+	@UpdateTimestamp
+	private Date updatedTimestamp;
 	
 	@OneToMany(mappedBy = "domain", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<DomainCategory> categories = new ArrayList<>();
@@ -82,7 +94,7 @@ public class Domain {
 	public void addCategory(Category category) {
         DomainCategory domainCategory = new DomainCategory(this, category);
         categories.add(domainCategory);
-        category.getDomains().add(domainCategory);
+//        category.getDomains().add(domainCategory);
     }
  
     public void removeCategory(Category category) {
