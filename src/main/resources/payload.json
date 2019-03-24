@@ -96,3 +96,52 @@ REsults:
   }
 }
 
+
+== DnsEntry
+http://localhost:8080/v1/dnsEntries
+
+{
+  "domainName" : {
+    "dns" :"www.yahoo.com"
+  },
+  "ipAddress" : {
+    "ipAddress" :"125.0.0.10.1"
+  },
+  "requestSourceType" : "HTTP"
+}
+
+http://localhost:8080/v1/domains
+
+{
+  "domainName":"whsmith.com",
+  "categories":[
+    {
+      "categoryName":"cloud"
+    },
+    {"categoryName":"shopping"
+    },
+    {"categoryName":"movie"
+    }
+    ]
+}
+
+{
+  "domainName":"yahoo.com",
+  "categories":[
+    {
+      "categoryName":"Cooking"
+    },
+    {"categoryName":"Auctions"
+    },
+    {"categoryName":"Buying"
+    }
+    ]
+}
+
+GET
+
+http://localhost:8080/v1/categories
+
+http://localhost:8080/v1/domains
+
+
