@@ -54,7 +54,6 @@ public class DomainRestController {
 				category.setCategoryName(categoryVo.getCategoryName());
 				
 				categoryRepository.save(category);
-//				domain.addCategory(category);
 				
 				DomainCategory domainCategory = new DomainCategory();
 				domainCategory.setDomain(domain);

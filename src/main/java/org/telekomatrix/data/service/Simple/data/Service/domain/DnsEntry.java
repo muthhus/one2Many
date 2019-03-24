@@ -1,62 +1,52 @@
 package org.telekomatrix.data.service.Simple.data.Service.domain;
 
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Version;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-@Table(name = "dns_enttry")
+@Table(name = "dns_entry")
 @Entity
 public class DnsEntry {
 	
 	@GeneratedValue
 	@Id
-	private Long id;
+	private Long dnsEntryId;
 	
-//	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//	@Fetch(FetchMode.SELECT)
-//	@JoinColumn(name="domainName",referencedColumnName="ID")
-//	@JsonManagedReference
-//	private DomainName domainName;
-//	
-//	
-//	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//	@Fetch(FetchMode.SELECT)
-//	@JoinColumn(name="ipAddress",referencedColumnName="ID")
-//	@JsonManagedReference
-//	private IpAddress ipAddress;
-	
-	@OneToMany(mappedBy = "dnsEntry", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
-	private Set<DomainName> domainNames = new HashSet<>(0);
+//	@JoinColumn(name="domainName")
+	@JsonManagedReference
+	private DomainName domainName;
 	
-	@OneToMany(mappedBy = "dnsEntry", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@Fetch(FetchMode.SELECT)
-	private Set<IpAddress> ipAddresses = new HashSet<>(0);
+//	@JoinColumn(name="ipAddress")
+	@JsonManagedReference
+	private IpAddress ipAddress;
 	
+	private long timpstamp;
 	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "timestamp")
-	private Date timestamp;
+	@NotNull(message="Request Source Type can't be empty")
+	@Column(name = "requestSourceType", nullable = false, length = 6)
+	@Enumerated(EnumType.STRING)
+	private RequestSourceType requestSourceType;
 	
 	@Version
     private Long version;
@@ -66,45 +56,24 @@ public class DnsEntry {
 		// TODO Auto-generated constructor stub
 	}
 
-	public DnsEntry(Long id, Set<DomainName> domainNames, Set<IpAddress> ipAddresses, Date timestamp, Long version) {
+	
+
+	public DnsEntry(DomainName domainName, IpAddress ipAddress, long timpstamp,
+			@NotNull(message = "Request Source Type can't be empty") RequestSourceType requestSourceType) {
 		super();
-		this.id = id;
-		this.domainNames = domainNames;
-		this.ipAddresses = ipAddresses;
-		this.timestamp = timestamp;
-		this.version = version;
+		this.domainName = domainName;
+		this.ipAddress = ipAddress;
+		this.timpstamp = timpstamp;
+		this.requestSourceType = requestSourceType;
 	}
 
-	public Long getId() {
-		return id;
+
+	public Long getDnsEntryId() {
+		return dnsEntryId;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Set<DomainName> getDomainNames() {
-		return domainNames;
-	}
-
-	public void setDomainNames(Set<DomainName> domainNames) {
-		this.domainNames = domainNames;
-	}
-
-	public Set<IpAddress> getIpAddresses() {
-		return ipAddresses;
-	}
-
-	public void setIpAddresses(Set<IpAddress> ipAddresses) {
-		this.ipAddresses = ipAddresses;
-	}
-
-	public Date getTimestamp() {
-		return timestamp;
-	}
-
-	public void setTimestamp(Date timestamp) {
-		this.timestamp = timestamp;
+	public void setDnsEntryId(Long dnsEntryId) {
+		this.dnsEntryId = dnsEntryId;
 	}
 
 	public Long getVersion() {
@@ -114,8 +83,37 @@ public class DnsEntry {
 	public void setVersion(Long version) {
 		this.version = version;
 	}
-	
-	
-	
+
+	public DomainName getDomainName() {
+		return domainName;
+	}
+
+	public void setDomainName(DomainName domainName) {
+		this.domainName = domainName;
+	}
+
+	public IpAddress getIpAddress() {
+		return ipAddress;
+	}
+
+	public void setIpAddress(IpAddress ipAddress) {
+		this.ipAddress = ipAddress;
+	}
+
+	public long getTimpstamp() {
+		return timpstamp;
+	}
+
+	public void setTimpstamp(long timpstamp) {
+		this.timpstamp = timpstamp;
+	}
+
+	public RequestSourceType getRequestSourceType() {
+		return requestSourceType;
+	}
+
+	public void setRequestSourceType(RequestSourceType requestSourceType) {
+		this.requestSourceType = requestSourceType;
+	}
 
 }

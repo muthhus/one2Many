@@ -17,11 +17,6 @@ public class DomainCategoryId implements Serializable {
 	private Domain domain;
 	private Category category;
 	
-	 @Id
-	    @GeneratedValue(strategy = GenerationType.TABLE)
-	    @Column(name = "id", nullable = false)
-	    private Integer id;
-	
 	@ManyToOne
 	@JsonBackReference
 	public Domain getDomain() {

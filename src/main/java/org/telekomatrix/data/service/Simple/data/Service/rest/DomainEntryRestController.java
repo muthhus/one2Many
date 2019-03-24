@@ -13,16 +13,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.telekomatrix.data.service.Simple.data.Service.domain.DnsEntry;
 import org.telekomatrix.data.service.Simple.data.Service.domain.DomainName;
+import org.telekomatrix.data.service.Simple.data.Service.domain.DomainNameIpAddress;
 import org.telekomatrix.data.service.Simple.data.Service.domain.IpAddress;
+import org.telekomatrix.data.service.Simple.data.Service.domain.RequestSourceType;
 import org.telekomatrix.data.service.Simple.data.Service.repository.DnsEntryRepository;
 import org.telekomatrix.data.service.Simple.data.Service.repository.DomainNameRepository;
 import org.telekomatrix.data.service.Simple.data.Service.repository.IpAddressRepository;
 import org.telekomatrix.data.service.Simple.data.Service.request.DnsEntryVO;
-import org.telekomatrix.data.service.Simple.data.Service.request.DomainNameVO;
-import org.telekomatrix.data.service.Simple.data.Service.request.IpAddressVO;
 
 @RestController
-@RequestMapping("/v1/domainEntries")
+@RequestMapping("v1/dnsEntries")
 public class DomainEntryRestController {
 	
 	@Autowired
@@ -39,61 +39,44 @@ public class DomainEntryRestController {
 	@PostMapping
 	public ResponseEntity<DnsEntry> add(@RequestBody DnsEntryVO dnsEntryVO) {
 		
-//		DnsEntry dnsEntry = new DnsEntry(null, null, null, null);
-//		
-//		BeanUtils.copyProperties(dnsEntryVO, dnsEntry);
+		DnsEntry dnsEntry = new DnsEntry(null, null, 1l, null);
 		
-//		DomainName dname = new DomainName();
-//		dname.setDomainName(dnsEntryVO.getDomainName().getDomainName());
-//		domainNameRepository.save(dname);
-//		
-//		IpAddress ip = new IpAddress();
-//		ip.setIpAddress(dnsEntryVO.getIpAddress().getIpAddress());
-//		ipAddressRepository.save(ip);
-//		
-//		dnsEntry.setTimeStamp(new Date());
-//		dnsEntry.setDomainName(dname);
-//		dnsEntry.setIpAddress(ip);
+		DomainName domainName = domainNameRepository.findByDns(dnsEntryVO.getDomainName().getDns());
 		
-		DnsEntry dnsEntry = new DnsEntry();
-		dnsEntry.setTimestamp(new Date());
-		
-		if(dnsEntryVO.getIpAddress().size() >0) {
-			for(IpAddressVO ipAddressVo : dnsEntryVO.getIpAddress()) {
-				
-				IpAddress ip = ipAddressRepository.findByIpAddress(ipAddressVo.getIpAddress());
-				if(ip == null) {
-					ip = new IpAddress();
-					ip.setIpAddress(ipAddressVo.getIpAddress());
-				
-					dnsEntry.getIpAddresses().add(ip);
-				} else {
-					dnsEntry.getIpAddresses().add(ip);
-				}
-			}
+		if(domainName == null) {
+			domainName = new DomainName();
 		}
+		domainName.setDns(dnsEntryVO.getDomainName().getDns());
 		
-		if(dnsEntryVO.getDomainName().size() >0) {
-			for(DomainNameVO domainNameVO : dnsEntryVO.getDomainName()) {
-				
-				DomainName domainName = domainNameRepository.findByDomainName(domainNameVO.getDomainName());
-				if(domainName == null) {
-					domainName = new DomainName();
-					domainName.setDomainName(domainNameVO.getDomainName());
-				
-					dnsEntry.getDomainNames().add(domainName);
-				} else {
-					dnsEntry.getDomainNames().add(domainName);
-				}
-			}
+		IpAddress ip = ipAddressRepository.findByIp(dnsEntryVO.getIpAddress().getIpAddress());
+		
+		if(ip == null) {
+			ip = new IpAddress();
 		}
-		
-		
-		
-		dnsEntryRepository.save(dnsEntry);
 	
+		ip.setIp(dnsEntryVO.getIpAddress().getIpAddress());
+		
+		Date date = new Date();
+		dnsEntry.setTimpstamp(date.getTime());
+		dnsEntry.setDomainName(domainName);
+		dnsEntry.setIpAddress(ip);
+		dnsEntry.setRequestSourceType(RequestSourceType.HTTP);
+		
+		dnsEntry.setDomainName(domainName);
+		dnsEntry.setIpAddress(ip);
+		dnsEntryRepository.save(dnsEntry);
+		
+		DomainNameIpAddress domainNameIpAddress = new DomainNameIpAddress();
+		domainNameIpAddress.setDomainName(dnsEntry.getDomainName());
+		domainNameIpAddress.setIpAddress(dnsEntry.getIpAddress());
+		domainNameIpAddress.setCreatedDate(new Date());
+		domainNameIpAddress.setCreatedBy("System");
+				
+		dnsEntry.getDomainName().getDomainNameIpAddress().add(domainNameIpAddress);
+		domainNameRepository.save(domainName);
 		
 		return new ResponseEntity<>(dnsEntry, HttpStatus.CREATED);
+		
 	}
 	
 	@GetMapping

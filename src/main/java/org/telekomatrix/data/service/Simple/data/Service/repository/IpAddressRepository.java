@@ -7,5 +7,5 @@ import org.telekomatrix.data.service.Simple.data.Service.domain.IpAddress;
 
 public interface IpAddressRepository extends JpaRepository<IpAddress, Long> , JpaSpecificationExecutor<IpAddress>{
 
-	IpAddress findByIpAddress(@Param("ipAddress") String ipAddress);
+	IpAddress findByIp(@Param("ipAddress") String ipAddress);
 }

@@ -6,7 +6,7 @@ public class DomainNameVO {
 
 	private String id;
 	
-	private String domainName;
+	private String dns;
 	
 	private List<DnsEntryVO> dnsEntryList;
 
@@ -15,10 +15,10 @@ public class DomainNameVO {
 		// TODO Auto-generated constructor stub
 	}
 
-	public DomainNameVO(String id, String domainName, List<DnsEntryVO> dnsEntryList) {
+	public DomainNameVO(String id, String dns, List<DnsEntryVO> dnsEntryList) {
 		super();
 		this.id = id;
-		this.domainName = domainName;
+		this.dns = dns;
 		this.dnsEntryList = dnsEntryList;
 	}
 
@@ -30,12 +30,12 @@ public class DomainNameVO {
 		this.id = id;
 	}
 
-	public String getDomainName() {
-		return domainName;
+	public String getDns() {
+		return dns;
 	}
 
-	public void setDomainName(String domainName) {
-		this.domainName = domainName;
+	public void setDns(String dns) {
+		this.dns = dns;
 	}
 
 	public List<DnsEntryVO> getDnsEntryList() {
@@ -45,6 +45,7 @@ public class DomainNameVO {
 	public void setDnsEntryList(List<DnsEntryVO> dnsEntryList) {
 		this.dnsEntryList = dnsEntryList;
 	}
+
 	
 	
 }

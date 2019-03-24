@@ -21,41 +21,33 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "ip_address")
-
 public class IpAddress {
 	
 	@GeneratedValue
 	@Id
 	private Long id;
 	
-	@Column(name = "ip_address")
-	private String ipAddress;
-	
-//	@OneToMany(mappedBy = "ipAddress", cascade=CascadeType.ALL, orphanRemoval=true)
-//	private List<DnsEntry> dnsEntries = new ArrayList<DnsEntry>();
+	@Column(name = "ip")
+	private String ip;
 	
 	@Version
     private Long version;
 	
-	@ManyToOne (cascade = CascadeType.ALL)
-	@JoinColumn(name="dns_entry_id")
-	private DnsEntry dnsEntry;
 	
-//	@OneToMany(mappedBy = "ipAddress", cascade=CascadeType.ALL, orphanRemoval=true)
-//	private Set<DomainName> domainNames = new HashSet<>();
+	@OneToMany(mappedBy = "pk.ipAddress", cascade=CascadeType.ALL, orphanRemoval=true)
+	private Set<DomainNameIpAddress> domainNames = new HashSet<>();
 
 	public IpAddress() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public IpAddress(Long id, String ipAddress, Long version, DnsEntry dnsEntry) {
+	public IpAddress(String ip, Set<DomainNameIpAddress> domainNames) {
 		super();
-		this.id = id;
-		this.ipAddress = ipAddress;
-		this.version = version;
-		this.dnsEntry = dnsEntry;
+		this.ip = ip;
+		this.domainNames = domainNames;
 	}
+
 
 	public Long getId() {
 		return id;
@@ -65,12 +57,12 @@ public class IpAddress {
 		this.id = id;
 	}
 
-	public String getIpAddress() {
-		return ipAddress;
+	public String getIp() {
+		return ip;
 	}
 
-	public void setIpAddress(String ipAddress) {
-		this.ipAddress = ipAddress;
+	public void setIp(String ip) {
+		this.ip = ip;
 	}
 
 	public Long getVersion() {
@@ -81,17 +73,13 @@ public class IpAddress {
 		this.version = version;
 	}
 
-	public DnsEntry getDnsEntry() {
-		return dnsEntry;
+	public Set<DomainNameIpAddress> getDomainNames() {
+		return domainNames;
 	}
 
-	public void setDnsEntry(DnsEntry dnsEntry) {
-		this.dnsEntry = dnsEntry;
+	public void setDomainNames(Set<DomainNameIpAddress> domainNames) {
+		this.domainNames = domainNames;
 	}
-
-
-
 	
 	
-
 }

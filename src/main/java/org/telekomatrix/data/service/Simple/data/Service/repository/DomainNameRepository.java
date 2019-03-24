@@ -7,5 +7,5 @@ import org.telekomatrix.data.service.Simple.data.Service.domain.DomainName;
 
 public interface DomainNameRepository extends JpaRepository<DomainName, Long> , JpaSpecificationExecutor<DomainName>{
 
-	DomainName findByDomainName(@Param("domainName") String domainName);
+	DomainName findByDns(@Param("domainName") String domainName);
 }
